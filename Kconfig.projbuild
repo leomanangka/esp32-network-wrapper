@@ -1,0 +1,116 @@
+menu "WiFi Configuration"
+
+  menu "STA Configuration"
+    comment "ESP STA Mode Configuration"
+
+    config ESP_WIFI_STA_SSID
+      string "WiFi STA Mode SSID"
+      default "SSID"
+      help
+        SSID (network name) to connect to.
+
+    config ESP_WIFI_STA_PASSWORD
+      string "WiFi STA Mode Password"
+      default "SSID_password"
+      help
+        WiFi password (WPA or WPA2) SSID password.
+
+    choice ESP_WIFI_SAE_MODE
+      prompt "WPA3 SAE mode selection"
+      default ESP_WPA3_SAE_PWE_BOTH
+      help
+        Select mode for SAE as Hunt and Peck, H2E or both.
+
+      config ESP_WPA3_SAE_PWE_HUNT_AND_PECK
+        bool "HUNT AND PECK"
+      config ESP_WPA3_SAE_PWE_HASH_TO_ELEMENT
+        bool "H2E"
+      config ESP_WPA3_SAE_PWE_BOTH
+        bool "BOTH"
+    endchoice
+
+    config ESP_WIFI_PW_ID
+      string "Password Identifier"
+      depends on ESP_WPA3_SAE_PWE_HASH_TO_ELEMENT || ESP_WPA3_SAE_PWE_BOTH
+      default ""
+      help
+        Password identifier for SAE H2E.
+
+    config ESP_MAXIMUM_RETRY
+      int "Maximum Retry"
+      default 5
+      help
+        Set the maximum retry to avoid station reconnecting to the AP
+        unlimited when the AP is really inexistent.
+
+    choice ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD
+      prompt "WiFi scan auth mode threshold"
+      default ESP_WIFI_AUTH_WPA2_PSK
+      help
+        The weakest authmode to accept in the scan mode.
+        This value defaults to ESP_WIFI_AUTH_WPA2_PSK incase password is
+        present and ESP_WIFI_AUTH_OPEN is used.
+        Please select ESP_WIFI_AUTH_WEP/ESP_WIFI_AUTH_WPA_PSK incase AP is
+        operating in WEP/WPA mode.
+
+      config ESP_WIFI_AUTH_OPEN
+        bool "OPEN"
+      config ESP_WIFI_AUTH_WEP
+        bool "WEP"
+      config ESP_WIFI_AUTH_WPA_PSK
+        bool "WPA_PSK"
+      config ESP_WIFI_AUTH_WPA2_PSK
+        bool "WPA2_PSK"
+      config ESP_WIFI_AUTH_WPA_WPA2_PSK
+        bool "WPA/WPA2_PSK"
+      config ESP_WIFI_AUTH_WPA3_PSK
+        bool "WPA3_PSK"
+      config ESP_WIFI_AUTH_WPA2_WPA3_PSK
+        bool "WPA2/WPA3_PSK"
+      config ESP_WIFI_AUTH_WAPI_PSK
+        bool "WAPI_PSK"
+    endchoice
+  endmenu
+
+  menu "SoftAP Configuration"
+    comment "ESP SoftAP Mode Configuration"
+
+    config ESP_WIFI_AP_SSID
+      string "WiFi AP SSID"
+      default "myssid"
+      help
+        SSID (network name) of the AP for the example to connect to.
+
+    config ESP_WIFI_AP_PASSWORD
+      string "WiFi AP Password"
+      default "mypassword"
+      help
+        WiFi password of the AP SSID.
+
+    config ESP_WIFI_AP_CHANNEL
+      int "WiFi AP Channel"
+      range 1 10
+      default 1
+      help
+        WiFi channel (network channel) of the AP.
+
+    config ESP_MAX_STA_CONN_AP
+      int "Maximal STA Connections"
+      default 4
+      help
+        Max number of the STA connects to AP.
+  endmenu
+
+  choice ESP_WIFI_MODE
+    prompt "ESP WiFi mode option"
+    default ESP_WIFI_MODE_STA
+    help
+      Choose WiFi mode between AP or STA.
+
+    config ESP_WIFI_MODE_STA
+      bool "STA"
+    config ESP_WIFI_MODE_SOFTAP
+      bool "SoftAP"
+  endchoice
+
+endmenu
